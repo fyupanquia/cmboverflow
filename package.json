@@ -1,0 +1,29 @@
+{
+  "name": "cmb-overflow",
+  "version": "1.0.0",
+  "description": "Un sitio como StackOverflow",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --ext js,hbs",
+    "lint": "standard",
+    "lint-fix": "standard --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^1.19.4",
+    "standard": "^12.0.1"
+  },
+  "dependencies": {
+    "@hapi/boom": "^9.1.0",
+    "@hapi/hapi": "^19.2.0",
+    "@hapi/inert": "^6.0.1",
+    "@hapi/joi": "^17.1.1",
+    "@hapi/vision": "^6.0.0",
+    "bcrypt": "^5.0.0",
+    "dotenv": "^8.2.0",
+    "firebase-admin": "^9.0.0",
+    "handlebars": "^4.7.6"
+  }
+}
