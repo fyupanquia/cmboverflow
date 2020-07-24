@@ -8,6 +8,9 @@ const path = require('path')
 const handlerbars = require('./lib/handlebars')
 const methods = require("./lib/methods");
 const site = require("./controllers/site");
+const crumb = require("crumb");
+const blankie = require("blankie");
+const scooter = require("@hapi/scooter");
 const {config} = require('./config')
 
 const server = Hapi.server({
@@ -24,6 +27,55 @@ async function init () {
   try {
     await server.register(inert)
     await server.register(vision)
+
+    await server.register({
+      plugin: require("@hapi/good"),
+      options: {
+        ops: {
+          interval: 60000,
+        },
+        reporters: {
+          myConsoleReporters: [
+            {
+              module: require("@hapi/good-console"),
+            },
+            "stdout",
+          ],
+        },
+      },
+    });
+
+    await server.register([
+      scooter,
+      {
+        plugin: blankie,
+        options: {
+          defaultSrc: `'self' 'unsafe-inline'`,
+          styleSrc: `'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com`,
+          fontSrc: `'self' 'unsafe-inline' data:`,
+          scriptSrc: `'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com/ https://code.jquery.com/`,
+          generateNonces: false,
+        },
+      },
+    ]);
+
+    await server.register({
+      plugin: crumb,
+      options: {
+        cookieOptions: {
+          isSecure: config.env === "prd",
+        },
+      },
+    });
+
+    await server.register(require('@hapi/basic'))
+
+    await server.register({
+      plugin: require("./lib/api"),
+      options: {
+        prefix: "api",
+      },
+    });
 
     server.method("setAnswerRight", methods.setAnswerRight);
     server.method("getLast", methods.getLast, {
@@ -59,15 +111,15 @@ async function init () {
     process.exit(1)
   }
 
-  console.log(`Servidor lanzado en: ${server.info.uri}`)
+  server.log("info", `Servidor lanzado en: ${server.info.uri}`);
 }
 
 process.on("unhandledRejection", (error) => {
-  console.error("UnhandledRejection", error.message, error);
+  server.log("UnhandledRejection", error);
 });
 
 process.on("unhandledException", (error) => {
-  console.error("unhandledException", error.message, error);
+  server.log("unhandledException", error);
 });
 
 init()

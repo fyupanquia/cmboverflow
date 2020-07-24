@@ -28,7 +28,6 @@ module.exports = [
     method: "POST",
     path: "/create-user",
     options: {
-      pre: [{ method: isAuth }],
       validate: {
         payload: Joi.object({
           name: Joi.string().required().min(3),
