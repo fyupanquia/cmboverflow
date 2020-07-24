@@ -1,12 +1,12 @@
 'use strict'
 
 const admin = require('firebase-admin')
-const serviceAccount = require('../config/serviceAccountKey.json')
+const {config} = require("../config")
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://local-vue-ex.firebaseio.com'
-})
+  credential: admin.credential.cert(config.firebase),
+  databaseURL: config.databaseURL,
+});
 
 const db = admin.database()
 
