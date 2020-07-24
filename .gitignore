@@ -2,5 +2,9 @@ node_modules
 .vscode
 .env
 public/uploads
+<<<<<<< HEAD
 package-lock.json
 firebase.json
+=======
+package-lock.json
+>>>>>>> 6ca53815f75ba2dc71988ee02f919c2d03453f6c
