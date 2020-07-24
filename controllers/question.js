@@ -1,11 +1,31 @@
 "use strict";
-
+const { writeFile } = require("fs");
+const { promisify } = require("util");
+const { join } = require("path");
+const { v1: uuid } = require("uuid");
 const questions = require("../models/index").questions;
 
+const write = promisify(writeFile);
+
 async function createQuestion(req, h) {
-  let result;
+  if (!req.state.user) {
+    return h.redirect("/login");
+  }
+
+  let result, filename;
   try {
-    result = await questions.create(req.payload, req.state.user);
+    var image = Buffer.from(req.payload.image);
+    //console.log(Buffer.isBuffer(x));
+    if (Buffer.isBuffer(image)) {
+      filename = `${uuid()}.png`;
+      console.log(filename);
+      await write(
+        join(__dirname, "..", "public", "uploads", filename),
+        req.payload.image
+      );
+    }
+
+    result = await questions.create(req.payload, req.state.user, filename);
     console.log(`Pregunta creada con el ID ${result}`);
   } catch (error) {
     console.error(`Ocurrio un error: ${error}`);
@@ -19,9 +39,39 @@ async function createQuestion(req, h) {
       .takeover();
   }
 
-  return h.response(`Pregunta creada con el ID ${result}`);
+  return h.redirect(`/question/${result}`);
+}
+
+async function answerQuestion(req, h) {
+  let result;
+  try {
+    result = await questions.answer(req.payload, req.state.user);
+    console.log(`Respuesta creada: ${result}`);
+  } catch (error) {
+    console.error(error);
+  }
+
+  return h.redirect(`/question/${req.payload.id}`);
+}
+
+async function setAnswerRight(req, h) {
+  let result;
+  try {
+    result = await req.server.methods.setAnswerRight(
+      req.params.questionId,
+      req.params.answerId,
+      req.state.user
+    );
+    console.log(result);
+  } catch (error) {
+    console.error(error);
+  }
+
+  return h.redirect(`/question/${req.params.questionId}`);
 }
 
 module.exports = {
   createQuestion,
+  answerQuestion,
+  setAnswerRight,
 };
