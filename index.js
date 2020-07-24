@@ -5,7 +5,8 @@ const inert = require('@hapi/inert')
 const vision = require('@hapi/vision')
 const routes = require('./routes')
 const path = require('path')
-const handlerbars = require('handlebars')
+const handlerbars = require('./lib/handlebars')
+const methods = require("./lib/methods");
 const site = require("./controllers/site");
 const {config} = require('./config')
 
@@ -24,6 +25,14 @@ async function init () {
     await server.register(inert)
     await server.register(vision)
 
+    server.method("setAnswerRight", methods.setAnswerRight);
+    server.method("getLast", methods.getLast, {
+      cache: {
+        expiresIn: 1000 * 60,
+        generateTimeout: 2000,
+      },
+    });
+    
     server.state("user", {
       ttl: 1000 * 60 * 60 * 24 * 7,
       isSecure: config.env === "prd",

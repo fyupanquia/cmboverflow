@@ -4,7 +4,7 @@ const questionModel = require("../models/index").questions;
 async function home(req, h) {
   let questions;
   try {
-    questions = await questionModel.getLast(10);
+    questions = await req.server.methods.getLast(10);
   } catch (error) {
     console.error(error);
   }
@@ -44,10 +44,6 @@ function fileNotFound(req, h) {
 }
 
 function ask(req, h) {
-  if (!req.state.user) {
-    return h.redirect("/login");
-  }
-
   return h.view("ask", {
     title: "Crear pregunta",
     user: req.state.user,
