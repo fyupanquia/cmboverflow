@@ -14,6 +14,6 @@ const Users = require('./users')
 const Questions = require("./questions");
 
 module.exports = {
-  users: new Users(db),
-  questions: new Questions(db),
+  users: Users(db),
+  questions: Questions(db),
 };

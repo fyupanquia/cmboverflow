@@ -1,0 +1,28 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "index.js",
+            "use": "@now/node-server"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/index.js"
+        }
+    ],
+    "env": {
+        "overflow_databaseURL": "@overflow_databaseurl",
+        "overflow_type": "@overflow_type",
+        "overflow_project_id": "@overflow_project_id",
+        "overflow_private_key_id": "@overflow_private_key_id",
+        "overflow_private_key": "@overflow_private_key",
+        "overflow_client_email": "@overflow_client_email",
+        "overflow_client_id": "@overflow_client_id",
+        "overflow_auth_uri": "@overflow_auth_uri",
+        "overflow_token_uri": "@overflow_token_uri",
+        "overflow_auth_provider_x509_cert_url": "@overflow_auth_provider_x509_cert_url",
+        "overflow_client_x509_cert_url": "@overflow_client_x509_cert_url"
+    }
+}

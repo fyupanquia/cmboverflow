@@ -1,13 +1,11 @@
 "use strict";
 
-class Questions {
-  constructor(db) {
-    this.db = db;
-    this.ref = this.db.ref("/");
-    this.collection = this.ref.child("questions");
-  }
+const Questions = (db) => {
+  
+    let collection = db.ref("/").child("questions");
+  
 
-  async create(info, user, filename) {
+  const create = async (info, user, filename) => {
     const data = {
       description: info.description,
       title: info.title,
@@ -18,29 +16,29 @@ class Questions {
       data.filename = filename;
     }
 
-    const question = this.collection.push();
+    const question = collection.push();
     question.set(data);
 
     return question.key;
   }
   
-  async getLast(amount) {
-    const query = await this.collection.limitToLast(amount).once("value");
+  const getLast = async (amount) => {
+    const query = await collection.limitToLast(amount).once("value");
     const data = query.val();
     return data;
   }
 
-  async getOne(id) {
-    const query = await this.collection.child(id).once("value");
+  const getOne = async (id) => {
+    const query = await collection.child(id).once("value");
     const data = query.val();
     return data;
   }
 
-  async answer(data, user) {
+  const answer = async (data, user) => {
     user = {
       ...user,
     };
-    const answers = await this.collection
+    const answers = await collection
       .child(data.id)
       .child("answers")
       .push();
@@ -48,8 +46,8 @@ class Questions {
     return answers;
   }
 
-  async setAnswerRight(questionId, answerId, user) {
-    const query = await this.collection.child(questionId).once("value");
+  const setAnswerRight = async (questionId, answerId, user) => {
+    const query = await collection.child(questionId).once("value");
     const question = query.val();
     const answers = question.answers;
 
@@ -61,12 +59,20 @@ class Questions {
       answers[key].correct = key === answerId;
     }
 
-    const update = await this.collection
+    const update = await collection
       .child(questionId)
       .child("answers")
       .update(answers);
     return update;
   }
+
+  return {
+    create,
+    getLast,
+    getOne,
+    answer,
+    setAnswerRight,
+  };
 }
 
 module.exports = Questions;

@@ -13,19 +13,20 @@ const patchcert = (cert) => {
 }
 
 const config = {
-  env: process.env.ENV,
-  databaseURL: process.env.databaseURL,
+  env: process.env.ENV || 'prd',
+  databaseURL: process.env.overflow_databaseURL,
   firebase: {
-    type: process.env.type,
-    project_id: process.env.project_id,
-    private_key_id: process.env.private_key_id,
-    private_key: patchcert(process.env.private_key),
-    client_email: process.env.client_email,
-    client_id: process.env.client_id,
-    auth_uri: process.env.auth_uri,
-    token_uri: process.env.token_uri,
-    auth_provider_x509_cert_url: process.env.auth_provider_x509_cert_url,
-    client_x509_cert_url: process.env.client_x509_cert_url,
+    type: process.env.overflow_type,
+    project_id: process.env.overflow_project_id,
+    private_key_id: process.env.overflow_private_key_id,
+    private_key: patchcert(process.env.overflow_private_key),
+    client_email: process.env.overflow_client_email,
+    client_id: process.env.overflow_client_id,
+    auth_uri: process.env.overflow_auth_uri,
+    token_uri: process.env.overflow_token_uri,
+    auth_provider_x509_cert_url:
+      process.env.overflow_auth_provider_x509_cert_url,
+    client_x509_cert_url: process.env.overflow_client_x509_cert_url,
   },
 };
 

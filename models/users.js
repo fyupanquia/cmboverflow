@@ -2,26 +2,23 @@
 
 const bcrypt = require('bcrypt')
 
-class Users {
-  constructor (db) {
-    this.db = db
-    this.ref = this.db.ref('/')
-    this.collection = this.ref.child('users')
-  }
+const Users = (db) => {
 
-  async create (data) {
+    let collection = db.ref('/').ref.child('users')
+
+  const create = async  (data) => {
     const user = {
       ...data
     }
-    user.password = await this.constructor.encrypt(data.password)
-    const newUser = this.collection.push()
+    user.password = await encrypt(data.password)
+    const newUser = collection.push()
     newUser.set(user)
 
     return newUser.key
   }
 
-  async validateUser (data) {
-    const userQuery = await this.collection
+  const validateUser = async  (data) => {
+    const userQuery = await collection
       .orderByChild('email')
       .equalTo(data.email)
       .once('value')
@@ -40,11 +37,17 @@ class Users {
     return false
   }
 
-  static async encrypt (passwd) {
+  const encrypt = async  (passwd) => {
     const saltRounds = 10
     const hashedPassword = await bcrypt.hash(passwd, saltRounds)
     return hashedPassword
   }
+
+  return {
+    create,
+    validateUser,
+    encrypt,
+  };
 }
 
 module.exports = Users
